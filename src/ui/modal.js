@@ -2,14 +2,30 @@
  * HTML overlay modal — displayed on top of the game canvas.
  *
  * Usage:
- *   createModal()   — call once during scene creation
+ *   createModal()                   — call once during scene creation
  *   showModal({ imageUrl, title, text })
+ *   showBookModal(pages)            — pages: [{ title, text }, ...]
  *   hideModal()
- *   isModalOpen()   — returns boolean
+ *   isModalOpen()                   — returns boolean
  */
 
-let overlay, imgEl, titleEl, textEl;
+let overlay, imgEl, titleEl, textEl, navEl, prevBtn, nextBtn, pageLabel;
+let bookPages = [];
+let currentPage = 0;
 let initialized = false;
+
+// Shared button style
+const BTN_CSS = `
+  background: #333333;
+  color: #ffffff;
+  border: none;
+  padding: 8px 22px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+`;
 
 export function createModal() {
   if (initialized) return;
@@ -31,7 +47,7 @@ export function createModal() {
   const box = document.createElement('div');
   box.style.cssText = `
     background: #1a1a2e;
-    border: 3px solid #e94560;
+    border: 3px solid #333333;
     border-radius: 8px;
     padding: 28px 28px 22px;
     max-width: 420px;
@@ -70,23 +86,42 @@ export function createModal() {
     color: #cccccc;
   `;
 
-  // Close button
+  // ── Book page navigation (hidden outside book mode) ───────────────────────
+  navEl = document.createElement('div');
+  navEl.style.cssText = `
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin-bottom: 16px;
+  `;
+
+  prevBtn = document.createElement('button');
+  prevBtn.textContent = '◀ Prev';
+  prevBtn.style.cssText = BTN_CSS + 'padding: 6px 14px;';
+  prevBtn.addEventListener('click', () => {
+    if (currentPage > 0) { currentPage--; renderBookPage(); }
+  });
+
+  pageLabel = document.createElement('span');
+  pageLabel.style.cssText = `font-size: 12px; color: #888888;`;
+
+  nextBtn = document.createElement('button');
+  nextBtn.textContent = 'Next ▶';
+  nextBtn.style.cssText = BTN_CSS + 'padding: 6px 14px;';
+  nextBtn.addEventListener('click', () => {
+    if (currentPage < bookPages.length - 1) { currentPage++; renderBookPage(); }
+  });
+
+  navEl.append(prevBtn, pageLabel, nextBtn);
+
+  // ── Close button ──────────────────────────────────────────────────────────
   const closeBtn = document.createElement('button');
   closeBtn.textContent = 'Close  [E]';
-  closeBtn.style.cssText = `
-    background: #e94560;
-    color: #ffffff;
-    border: none;
-    padding: 8px 22px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 13px;
-    letter-spacing: 0.5px;
-  `;
+  closeBtn.style.cssText = BTN_CSS;
   closeBtn.addEventListener('click', hideModal);
 
-  box.append(imgEl, titleEl, textEl, closeBtn);
+  box.append(imgEl, titleEl, textEl, navEl, closeBtn);
   overlay.appendChild(box);
   document.body.appendChild(overlay);
 
@@ -96,7 +131,19 @@ export function createModal() {
   });
 }
 
+function renderBookPage() {
+  const p = bookPages[currentPage];
+  titleEl.textContent = p.title;
+  textEl.textContent  = p.text;
+  pageLabel.textContent = `${currentPage + 1} / ${bookPages.length}`;
+  prevBtn.disabled = currentPage === 0;
+  nextBtn.disabled = currentPage === bookPages.length - 1;
+  prevBtn.style.opacity = prevBtn.disabled ? '0.4' : '1';
+  nextBtn.style.opacity = nextBtn.disabled ? '0.4' : '1';
+}
+
 export function showModal({ imageUrl, title, text }) {
+  navEl.style.display = 'none';
   if (imageUrl) {
     imgEl.src = imageUrl;
     imgEl.style.display = 'block';
@@ -108,8 +155,18 @@ export function showModal({ imageUrl, title, text }) {
   overlay.style.display = 'flex';
 }
 
+export function showBookModal(pages) {
+  imgEl.style.display = 'none';
+  bookPages = pages;
+  currentPage = 0;
+  navEl.style.display = 'flex';
+  renderBookPage();
+  overlay.style.display = 'flex';
+}
+
 export function hideModal() {
   overlay.style.display = 'none';
+  navEl.style.display = 'none';
 }
 
 export function isModalOpen() {
