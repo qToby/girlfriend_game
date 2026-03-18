@@ -193,12 +193,12 @@ export class RoomScene extends Phaser.Scene {
 
     // Phone screens
     for (let i = 0; i <= 32; i++) {
-      this.load.image(`phone_${i - 1}`, `/assets/Phonescreens/screen${i}.png`);
+      this.load.image(`phone_${i - 1}`, `/assets/Phonescreens/screen${i}.PNG`);
     }
 
     // Photo album images
     for (let i = 0; i < 19; i++) {
-      this.load.image(`photo_${i}`, `/assets/images/Merey_and_Toby/img${i + 1}.jpg`);
+      this.load.image(`photo_${i}`, `/assets/images/Merey_and_Toby/img${i + 1}.png`);
     }
   }
 
@@ -284,25 +284,25 @@ export class RoomScene extends Phaser.Scene {
 
     // ── Photo Album UI ────────────────────────────────────────────────────────
     const ALBUM_PAGES = [
-      { image: '/assets/images/Merey_and_Toby/img1.jpg',  text: 'The very beginning of everything.' },
-      { image: '/assets/images/Merey_and_Toby/img2.jpg',  text: 'POV you are Toby looking at his cutie patutie gf' },
-      { image: '/assets/images/Merey_and_Toby/img3.jpg',  text: 'Yummy christmas market' },
-      { image: '/assets/images/Merey_and_Toby/img4.jpg',  text: 'Still can\'t believe how lucky I got.' },
-      { image: '/assets/images/Merey_and_Toby/img5.jpg',  text: 'This smile is my favourite thing in the world.' },
-      { image: '/assets/images/Merey_and_Toby/img6.jpg',  text: 'Adventures are better with you.' },
-      { image: '/assets/images/Merey_and_Toby/img7.jpg',  text: 'Somewhere I\'d go back to in a heartbeat.' },
-      { image: '/assets/images/Merey_and_Toby/img8.jpg',  text: 'Our first Flight together' },
-      { image: '/assets/images/Merey_and_Toby/img9.jpg',  text: 'KAZAKHSTAN YEAH' },
-      { image: '/assets/images/Merey_and_Toby/img10.jpg', text: 'Snowboarding with you was so much fun' },
-      { image: '/assets/images/Merey_and_Toby/img11.jpg', text: '2 moments before you fell on me :o' },
-      { image: '/assets/images/Merey_and_Toby/img12.jpg', text: 'Every photo with you tells a whole story.' },
-      { image: '/assets/images/Merey_and_Toby/img13.jpg', text: 'I think we look like a really cute couple here' },
-      { image: '/assets/images/Merey_and_Toby/img14.jpg', text: 'One of those days I\'d live twice.' },
-      { image: '/assets/images/Merey_and_Toby/img15.jpg', text: 'hihihi' },
-      { image: '/assets/images/Merey_and_Toby/img16.jpg', text: 'Ussss in Almatyyy' },
-      { image: '/assets/images/Merey_and_Toby/img17.jpg', text: 'I like how you look when you\'re riding'},
-      { image: '/assets/images/Merey_and_Toby/img18.jpg', text: 'Pottery with you <3' },
-      { image: '/assets/images/Merey_and_Toby/img19.jpg', text: 'Here\'s to all the pictures we haven\'t taken yet.' },
+      { image: '/assets/images/Merey_and_Toby/img1.png',  text: 'The very beginning of everything.' },
+      { image: '/assets/images/Merey_and_Toby/img2.png',  text: 'POV you are Toby looking at his cutie patutie gf' },
+      { image: '/assets/images/Merey_and_Toby/img3.png',  text: 'Yummy christmas market' },
+      { image: '/assets/images/Merey_and_Toby/img4.png',  text: 'Still can\'t believe how lucky I got.' },
+      { image: '/assets/images/Merey_and_Toby/img5.png',  text: 'This smile is my favourite thing in the world.' },
+      { image: '/assets/images/Merey_and_Toby/img6.png',  text: 'Adventures are better with you.' },
+      { image: '/assets/images/Merey_and_Toby/img7.png',  text: 'Somewhere I\'d go back to in a heartbeat.' },
+      { image: '/assets/images/Merey_and_Toby/img8.png',  text: 'Our first Flight together' },
+      { image: '/assets/images/Merey_and_Toby/img9.png',  text: 'KAZAKHSTAN YEAH' },
+      { image: '/assets/images/Merey_and_Toby/img10.png', text: 'Snowboarding with you was so much fun' },
+      { image: '/assets/images/Merey_and_Toby/img11.png', text: '2 moments before you fell on me :o' },
+      { image: '/assets/images/Merey_and_Toby/img12.png', text: 'Every photo with you tells a whole story.' },
+      { image: '/assets/images/Merey_and_Toby/img13.png', text: 'I think we look like a really cute couple here' },
+      { image: '/assets/images/Merey_and_Toby/img14.png', text: 'One of those days I\'d live twice.' },
+      { image: '/assets/images/Merey_and_Toby/img15.png', text: 'hihihi' },
+      { image: '/assets/images/Merey_and_Toby/img16.png', text: 'Ussss in Almatyyy' },
+      { image: '/assets/images/Merey_and_Toby/img17.png', text: 'I like how you look when you\'re riding'},
+      { image: '/assets/images/Merey_and_Toby/img18.png', text: 'Pottery with you <3' },
+      { image: '/assets/images/Merey_and_Toby/img19.png', text: 'Here\'s to all the pictures we haven\'t taken yet.' },
     ];
 
     this.photoAlbumUI = createPhotoAlbumUI();
@@ -561,7 +561,7 @@ export class RoomScene extends Phaser.Scene {
     // Photo frame — shows the photo in the modal
     const photoSprite = place('photoframe', 14, 0, this.playerY-1, { hasHitbox: true });
     registerInteractable(photoSprite, () => showModal({
-      imageUrl: '/assets/images/first_date.jpg',
+      imageUrl: '/assets/images/first_date.png',
       title: 'Our First Adventure',
       text: 'A photo from the day everything started. Some memories are worth keeping forever.',
     }));
