@@ -1,16 +1,17 @@
 import Phaser from 'phaser';
 import { createModal, showModal, showBookModal, hideModal, isModalOpen } from '../ui/modal.js';
 import { DialogueUI } from '../ui/DialogueUI.js';
+import { createPhotoAlbumUI } from '../ui/photoAlbum.js';
+import { PhoneUI } from '../ui/PhoneUI.js';
 
 const texts = [
-`Tage werden kürzer, Abende kälter und die Gedanken düsterer.
-Ich sehne mich nach Nähe, Wärme, Liebe.
-Ich sehne mich nach dir.
+`The days grow shorter, the evenings colder, and my thoughts drift into darker places. I long for closeness, for warmth, for love. I long for you.
 
-Aber ich weiß nicht wie du heißt, wo du lebst, wann wir uns begegnen und wer du bist. Doch ich bin mir sicher dich gibt es und ich freue mich dich kennenzulernen.
-Werde melancholisch wenn ich mir vorstelle dass ich als alter Mann an unsere erste Begegnung zurückdenke.
-Und kann es kaum erwarten dir das erste Mal in die Augen zu blicken - deine Stimme zu hören, zu erfahren wie du die Welt siehst und deinen Atem auf meiner Haut zu spüren.
-Hoffentlich lässt du mich nicht mehr zu lange warten - ich sehne mich nach dir.`,
+ Yet I don’t know your name, where you are, when our paths will cross, or who you are. And still, I am certain that you exist - and I look forward to meeting you.
+
+ I grow melancholic imagining myself as an old man, looking back on the first moment we met. And I can hardly wait to look into your eyes for the very first time. To hear your voice, to discover how you see the world, and to feel your breath against my skin.
+
+ I hope you won’t keep me waiting much longer - I am longing for you.`,
 
 
 `And then I sat there - on a small bench in the smoking area in front of my dorm on a Saturday morning. Dawn is already beginning to show, your scarf scratches against my neck, tears relentlessly carve new paths down my cheeks, and Sam Smith sings „Too good at goodbyes“ just for me through my AirPods.
@@ -182,10 +183,23 @@ export class RoomScene extends Phaser.Scene {
     this.load.image('box',               '/assets/box.png');
     this.load.image('table',               '/assets/table.png');
 
+    this.load.image('photoalbum',               '/assets/photoalbum.png');
+    this.load.image('phone',               '/assets/phone.png');
+
     this.load.image('carpet_green',               '/assets/carpet_green.png');
     this.load.image('carpet_red',               '/assets/carpet_red.png');
     this.load.image('bookshelf_facing_down', '/assets/bookshelf_facing_down.png');
     this.load.image('wall',               '/assets/wall.png');
+
+    // Phone screens
+    for (let i = 0; i <= 32; i++) {
+      this.load.image(`phone_${i - 1}`, `/assets/Phonescreens/screen${i}.png`);
+    }
+
+    // Photo album images
+    for (let i = 0; i < 19; i++) {
+      this.load.image(`photo_${i}`, `/assets/images/Merey_and_Toby/img${i + 1}.jpg`);
+    }
   }
 
   // ── create: build the room and set up all game objects ──────────────────────
@@ -257,14 +271,42 @@ export class RoomScene extends Phaser.Scene {
     });
     this.eKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
 
-    // E key: close modal if open, otherwise try to interact
+    // E key: close modal if open, skip if photo album or phone is open, otherwise try to interact
     this.eKey.on('down', () => {
       if (isModalOpen()) { hideModal(); return; }
+      if (this.photoAlbumUI.isOpen()) return; // album handles E via its own DOM listener
+      if (this.phoneUI.isActive()) return;    // phone handles E via its own Phaser listener
       this.tryInteract();
     });
 
     // ── HTML modal ────────────────────────────────────────────────────────────
     createModal();
+
+    // ── Photo Album UI ────────────────────────────────────────────────────────
+    const ALBUM_PAGES = [
+      { image: '/assets/images/Merey_and_Toby/img1.jpg',  text: 'The very beginning of everything.' },
+      { image: '/assets/images/Merey_and_Toby/img2.jpg',  text: 'POV you are Toby looking at his cutie patutie gf' },
+      { image: '/assets/images/Merey_and_Toby/img3.jpg',  text: 'Yummy christmas market' },
+      { image: '/assets/images/Merey_and_Toby/img4.jpg',  text: 'Still can\'t believe how lucky I got.' },
+      { image: '/assets/images/Merey_and_Toby/img5.jpg',  text: 'This smile is my favourite thing in the world.' },
+      { image: '/assets/images/Merey_and_Toby/img6.jpg',  text: 'Adventures are better with you.' },
+      { image: '/assets/images/Merey_and_Toby/img7.jpg',  text: 'Somewhere I\'d go back to in a heartbeat.' },
+      { image: '/assets/images/Merey_and_Toby/img8.jpg',  text: 'Our first Flight together' },
+      { image: '/assets/images/Merey_and_Toby/img9.jpg',  text: 'KAZAKHSTAN YEAH' },
+      { image: '/assets/images/Merey_and_Toby/img10.jpg', text: 'Snowboarding with you was so much fun' },
+      { image: '/assets/images/Merey_and_Toby/img11.jpg', text: '2 moments before you fell on me :o' },
+      { image: '/assets/images/Merey_and_Toby/img12.jpg', text: 'Every photo with you tells a whole story.' },
+      { image: '/assets/images/Merey_and_Toby/img13.jpg', text: 'I think we look like a really cute couple here' },
+      { image: '/assets/images/Merey_and_Toby/img14.jpg', text: 'One of those days I\'d live twice.' },
+      { image: '/assets/images/Merey_and_Toby/img15.jpg', text: 'hihihi' },
+      { image: '/assets/images/Merey_and_Toby/img16.jpg', text: 'Ussss in Almatyyy' },
+      { image: '/assets/images/Merey_and_Toby/img17.jpg', text: 'I like how you look when you\'re riding'},
+      { image: '/assets/images/Merey_and_Toby/img18.jpg', text: 'Pottery with you <3' },
+      { image: '/assets/images/Merey_and_Toby/img19.jpg', text: 'Here\'s to all the pictures we haven\'t taken yet.' },
+    ];
+
+    this.photoAlbumUI = createPhotoAlbumUI();
+    this.photoAlbumUI.setPages(ALBUM_PAGES);
 
     // ── HUD: controls reminder ────────────────────────────────────────────────
     this.add
@@ -279,6 +321,11 @@ export class RoomScene extends Phaser.Scene {
       .setOrigin(0.5, 0.5)
       .setDepth(300);
 
+    // ── Phone UI ──────────────────────────────────────────────────────────────
+    const phoneScreenKeys = Array.from({ length: 33 }, (_, i) => `phone_${i}`);
+    this.phoneUI = new PhoneUI(this);
+    this.phoneUI.setImages(phoneScreenKeys);
+
     // ── Dialogue UI ───────────────────────────────────────────────────────────
     this.dialogueUI = new DialogueUI(this);
     this.dialogueUI.startDialogue([
@@ -292,8 +339,8 @@ export class RoomScene extends Phaser.Scene {
 
   // ── update: movement + hint visibility ──────────────────────────────────────
   update(_time, delta) {
-    // Pause everything while a modal or dialogue UI is displayed
-    if (isModalOpen() || this.dialogueUI.isActive()) return;
+    // Pause everything while a modal, dialogue, photo album, or phone is displayed
+    if (isModalOpen() || this.dialogueUI.isActive() || this.photoAlbumUI.isOpen() || this.phoneUI.isActive()) return;
 
     const dt = delta / 1000; // seconds
     let dx = 0;
@@ -451,9 +498,38 @@ export class RoomScene extends Phaser.Scene {
 
     const box = place('box', 1.5, 5, this.playerY-1, { hasHitbox: true, hitboxHeight: TILE_SIZE });
     registerInteractable(box, boxInteract);
-    //place('box', 1.5, 7, this.playerY-1, { hasHitbox: true, hitboxHeight: TILE_SIZE });
 
     place('table', 16, 4.8, this.playerY-1, { hasHitbox: true, hitboxHeight: TILE_SIZE });
+
+    const phoneSprite = place('phone', 10, 7, this.playerY-1, { hasHitbox: false });
+    registerInteractable(phoneSprite, () => {
+      this.dialogueUI.startChoice(
+        ['Oh, there\'s a phone. Do you want to check it? (tap on phone)'],
+        ['Yes', 'No'],
+        (answer) => {
+          if (answer === 'Yes') {
+            this.phoneUI.show();
+          } else {
+            this.dialogueUI.startDialogue([
+              'oh you really value your boyfriends privacy...',
+            ]);
+          }
+        }
+      );
+    });
+
+    const photoAlbumSprite = place('photoalbum', 8, 5, this.playerY-1, { hasHitbox: true });
+    registerInteractable(photoAlbumSprite, () => {
+      this.dialogueUI.startChoice(
+        ['Oh there is a photo album. Do you want to take a look?'],
+        ['Yes', 'No'],
+        (answer) => {
+          if (answer === 'Yes') {
+            this.photoAlbumUI.show();
+          }
+        }
+      );
+    });
 
     // TV — against the right wall
     place('tv_facing_down', 16, 2, this.playerY-1, { hasHitbox: true, hitboxHeight: TILE_SIZE });
@@ -483,7 +559,7 @@ export class RoomScene extends Phaser.Scene {
     registerInteractable(p2, plantInteract);
 
     // Photo frame — shows the photo in the modal
-    const photoSprite = place('photoframe', 14, 0, this.playerY-1, { hasHitbox: false });
+    const photoSprite = place('photoframe', 14, 0, this.playerY-1, { hasHitbox: true });
     registerInteractable(photoSprite, () => showModal({
       imageUrl: '/assets/images/first_date.jpg',
       title: 'Our First Adventure',
