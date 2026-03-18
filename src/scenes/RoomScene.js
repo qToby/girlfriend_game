@@ -186,6 +186,8 @@ export class RoomScene extends Phaser.Scene {
     this.load.image('photoalbum',               '/assets/photoalbum.png');
     this.load.image('phone',               '/assets/phone.png');
 
+    this.load.image('letter',               '/assets/letter.png');
+
     this.load.image('carpet_green',               '/assets/carpet_green.png');
     this.load.image('carpet_red',               '/assets/carpet_red.png');
     this.load.image('bookshelf_facing_down', '/assets/bookshelf_facing_down.png');
@@ -462,6 +464,40 @@ export class RoomScene extends Phaser.Scene {
     //place('bed_facing_right', 2, 9, this.playerY-1, { hasHitbox: true, hitboxHeight: TILE_SIZE });
     const bed = place('bed_facing_right', 2, 9, this.playerY+1, { hasHitbox: true, hitboxHeight: TILE_SIZE });
     registerInteractable(bed, bedInteract);
+
+    // Love letter — resting on the bed
+    const LOVE_LETTER_PAGE = [{
+      title: 'A letter for you',
+      text:
+`Dear Merey,
+
+I don't know exactly when it happened,
+but somewhere along the way you became
+my favourite part of every day.
+
+Thank you for being so wonderfully you.
+I love you more than words on paper (or a screen) can carry.
+
+Happy three months, I cannot wait to spend many more with you on my side.
+
+— Toby`,
+    }];
+    const letterSprite = place('letter', 15, 9, bed.depth + 1, { hasHitbox: false });
+    registerInteractable(letterSprite, () => {
+      this.dialogueUI.startChoice(
+        ['Oh, there\'s a love letter...', 'Do you want to read it?'],
+        ['Yes', 'No'],
+        (answer) => {
+          if (answer === 'Yes') {
+            showBookModal(LOVE_LETTER_PAGE);
+          } else {
+            this.dialogueUI.startDialogue([
+              'Oh what a bummer... it might be for you.',
+            ]);
+          }
+        }
+      );
+    });
 
 
     // Window — centred on top wall, row 1 sits right below the wall tile
