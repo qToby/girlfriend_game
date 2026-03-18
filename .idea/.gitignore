@@ -1,3 +1,8 @@
-# Default ignored files
+node_modules/
+dist/
+.env
+.DS_Store
+
+# Your existing ones
 /shelf/
 /workspace.xml
